@@ -1,0 +1,41 @@
+test_clarification_to_publish_through_cli (test_cli_view.CliViewTests.test_clarification_to_publish_through_cli) ... ok
+test_view_embedded_data_cannot_close_script_tag (test_cli_view.CliViewTests.test_view_embedded_data_cannot_close_script_tag) ... ok
+test_answer_approve_publish_and_edit_revokes_readiness (test_core.GoalTests.test_answer_approve_publish_and_edit_revokes_readiness) ... ok
+test_invalid_answer_or_empty_confirmer_does_not_approve (test_core.GoalTests.test_invalid_answer_or_empty_confirmer_does_not_approve) ... ok
+test_other_unresolved_goal_blocks_publish (test_core.GoalTests.test_other_unresolved_goal_blocks_publish) ... ok
+test_unanswered_and_unapproved_never_publish (test_core.GoalTests.test_unanswered_and_unapproved_never_publish) ... ok
+test_expanded_folder_cycle_rejected (test_core.RequirementTests.test_expanded_folder_cycle_rejected) ... ok
+test_folder_dependencies_expand_and_inherit (test_core.RequirementTests.test_folder_dependencies_expand_and_inherit) ... ok
+test_malformed_scenarios_and_nodes_rejected (test_core.RequirementTests.test_malformed_scenarios_and_nodes_rejected) ... ok
+test_missing_duplicate_and_cyclic_dependencies (test_core.RequirementTests.test_missing_duplicate_and_cyclic_dependencies) ... ok
+test_upstream_data_contract_is_reused (test_core.RequirementTests.test_upstream_data_contract_is_reused) ... ok
+test_wrappers_and_upstream_fields_preserved (test_core.RequirementTests.test_wrappers_and_upstream_fields_preserved) ... ok
+test_committing_out_of_scope_change_does_not_bypass_scope_check (test_execution.ExecutionTests.test_committing_out_of_scope_change_does_not_bypass_scope_check) ... ok
+test_goal_and_project_edits_revoke_export (test_execution.ExecutionTests.test_goal_and_project_edits_revoke_export) ... ok
+test_legacy_export_still_loads_in_updated_scheduler (test_execution.ExecutionTests.test_legacy_export_still_loads_in_updated_scheduler) ... ok
+test_only_accepted_predecessor_unlocks_next_wave (test_execution.ExecutionTests.test_only_accepted_predecessor_unlocks_next_wave) ... ok
+test_out_of_scope_changes_fail_acceptance (test_execution.ExecutionTests.test_out_of_scope_changes_fail_acceptance) ... ok
+test_scheduler_dispatch_contract_integration (test_execution.ExecutionTests.test_scheduler_dispatch_contract_integration) ... ok
+test_source_and_unrelated_repositories_rejected (test_execution.ExecutionTests.test_source_and_unrelated_repositories_rejected) ... ok
+test_unverified_artifacts_cannot_mark_accepted (test_execution.ExecutionTests.test_unverified_artifacts_cannot_mark_accepted) ... ok
+test_verify_cli_reports_actual_test_failure (test_execution.ExecutionTests.test_verify_cli_reports_actual_test_failure) ... ok
+test_existing_project_unknowns_block_formal_publication (test_gaps.GapTests.test_existing_project_unknowns_block_formal_publication) ... ok
+test_default_import_stays_in_project_arc_and_excludes_generated_artifacts (test_importer.ImporterTests.test_default_import_stays_in_project_arc_and_excludes_generated_artifacts) ... ok
+test_git_status_includes_dirty_but_does_not_disclose_secret_names (test_importer.ImporterTests.test_git_status_includes_dirty_but_does_not_disclose_secret_names) ... ok
+test_historical_failures_preserved_and_malformed_report_is_unknown (test_importer.ImporterTests.test_historical_failures_preserved_and_malformed_report_is_unknown) ... ok
+test_inventory_does_not_modify_business_files_or_promote_inferences (test_importer.ImporterTests.test_inventory_does_not_modify_business_files_or_promote_inferences) ... ok
+test_secrets_and_vendor_paths_are_not_exported (test_importer.ImporterTests.test_secrets_and_vendor_paths_are_not_exported) ... ok
+test_source_output_rejected (test_importer.ImporterTests.test_source_output_rejected) ... ok
+test_symlink_source_is_not_followed (test_importer.ImporterTests.test_symlink_source_is_not_followed) ... ok
+test_compiled_request_is_immutable (test_intake_queue.IntakeQueueTests.test_compiled_request_is_immutable) ... ok
+test_enqueue_requires_compiled_req_then_appends_in_dependency_order (test_intake_queue.IntakeQueueTests.test_enqueue_requires_compiled_req_then_appends_in_dependency_order) ... ok
+test_intake_uses_project_arc_reuses_source_and_creates_no_req (test_intake_queue.IntakeQueueTests.test_intake_uses_project_arc_reuses_source_and_creates_no_req) ... ok
+test_invented_answers_stale_source_and_incomplete_tdd_rejected (test_intake_queue.IntakeQueueTests.test_invented_answers_stale_source_and_incomplete_tdd_rejected) ... ok
+test_unanswered_question_blocks_all_req_files_until_answer_and_review (test_intake_queue.IntakeQueueTests.test_unanswered_question_blocks_all_req_files_until_answer_and_review) ... ok
+test_updated_scheduler_waits_for_window_then_consumes_req_chain (test_intake_queue.IntakeQueueTests.test_updated_scheduler_waits_for_window_then_consumes_req_chain) ... ok
+test_read_only_live_snapshot_and_no_file_serving (test_server.ServerTests.test_read_only_live_snapshot_and_no_file_serving) ... ok
+
+----------------------------------------------------------------------
+Ran 36 tests in 7.766s
+
+OK

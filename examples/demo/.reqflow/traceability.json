@@ -1,0 +1,60 @@
+{
+  "version": 1,
+  "requirements": {
+    "REQ-ADD": {
+      "status": "accepted",
+      "requirements_sha256": "008dcaebf4fbcb57f79f135fdfd02b673a4610be378a5a6024fba332baac0691",
+      "workspace": "D:\\code\\arc\\examples\\demo\\worktree",
+      "test_runs": [
+        {
+          "id": "e2f93713718d49f3bb67cb90c27c8c98",
+          "command": [
+            "D:\\code\\arc\\.venv\\Scripts\\python.exe",
+            "-m",
+            "unittest",
+            "discover",
+            "-s",
+            ".",
+            "-v"
+          ],
+          "started_at": "2026-10-27T12:14:55.764753+00:00",
+          "requirements_sha256": "008dcaebf4fbcb57f79f135fdfd02b673a4610be378a5a6024fba332baac0691",
+          "timed_out": false,
+          "exit_code": 1,
+          "finished_at": "2026-10-27T12:14:55.896728+00:00",
+          "stdout": "D:\\code\\arc\\examples\\demo\\.reqflow\\runs\\e2f93713718d49f3bb67cb90c27c8c98\\stdout.log",
+          "stderr": "D:\\code\\arc\\examples\\demo\\.reqflow\\runs\\e2f93713718d49f3bb67cb90c27c8c98\\stderr.log"
+        },
+        {
+          "id": "d856c9cf0c28444f8811059b3483f1a4",
+          "command": [
+            "D:\\code\\arc\\.venv\\Scripts\\python.exe",
+            "-m",
+            "unittest",
+            "discover",
+            "-s",
+            ".",
+            "-v"
+          ],
+          "started_at": "2026-10-27T12:14:55.999656+00:00",
+          "requirements_sha256": "008dcaebf4fbcb57f79f135fdfd02b673a4610be378a5a6024fba332baac0691",
+          "timed_out": false,
+          "exit_code": 0,
+          "finished_at": "2026-10-27T12:14:56.127950+00:00",
+          "stdout": "D:\\code\\arc\\examples\\demo\\.reqflow\\runs\\d856c9cf0c28444f8811059b3483f1a4\\stdout.log",
+          "stderr": "D:\\code\\arc\\examples\\demo\\.reqflow\\runs\\d856c9cf0c28444f8811059b3483f1a4\\stderr.log"
+        }
+      ],
+      "logs": [
+        "D:\\code\\arc\\examples\\demo\\.reqflow\\runs\\d856c9cf0c28444f8811059b3483f1a4\\stdout.log",
+        "D:\\code\\arc\\examples\\demo\\.reqflow\\runs\\d856c9cf0c28444f8811059b3483f1a4\\stderr.log"
+      ],
+      "tests": [
+        "D:\\code\\arc\\examples\\demo\\worktree\\test_calculator.py"
+      ],
+      "code": [
+        "D:\\code\\arc\\examples\\demo\\worktree\\calculator.py"
+      ]
+    }
+  }
+}

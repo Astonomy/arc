@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "id": "req-0aa2b2cf16e8a7b1aa2e",
+  "workspace": "D:\\code\\arc\\examples\\demo\\worktree",
+  "prompt": "Implement only approved requirement REQ-ADD: 两数相加\nRequirement: {\"id\": \"REQ-ADD\", \"name\": \"两数相加\", \"type\": \"ATOMIC\", \"description\": \"add(a,b) 返回数字之和\", \"dependencies\": [], \"scenarios\": [{\"name\": \"两个整数相加\", \"steps\": [{\"keyword\": \"GIVEN\", \"content\": \"输入整数 2 和 3\"}, {\"keyword\": \"WHEN\", \"content\": \"调用 add(2,3)\"}, {\"keyword\": \"THEN\", \"content\": \"结果为 5\"}]}], \"resolved_data\": []}\nProject constraints: {\"allowed_paths\": [\"calculator.py\", \"test_calculator.py\"], \"constraints\": [\"Synthetic demonstration only; never CCE business requirements.\"], \"repository\": \"D:\\\\code\\\\arc\\\\examples\\\\demo\\\\repository\", \"version\": 1}\nRequirement source: D:\\code\\arc\\examples\\demo\\.reqflow\\requirements.yaml\nUse test-first development: write/run a failing test (RED), implement the smallest change (GREEN), then run regression tests. Preserve the existing architecture and unrelated files. Respect configured allowed_paths and stop on conflicts or unclear behavior. Save an artifact receipt with REQ id, test argv and exit codes, changed code paths and logs. Do not mark acceptance yourself; Reqflow must verify actual test execution.",
+  "requirements": "D:\\code\\arc\\examples\\demo\\.reqflow\\requirements.yaml",
+  "readiness": "D:\\code\\arc\\examples\\demo\\.reqflow\\readiness.json",
+  "quota_file": "D:\\code\\arc\\examples\\demo\\quota-not-configured.json",
+  "min_remaining_percent": 10,
+  "require_clean": true
+}

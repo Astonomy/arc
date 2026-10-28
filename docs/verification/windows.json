@@ -1,0 +1,39 @@
+{
+  "checked_at": "2026-10-27T14:24:52.259027+00:00",
+  "platform": "Windows-2025Server-10.0.26100-SP0",
+  "python": "3.13.13 (main, Apr 14 2026, 14:30:19) [MSC v.1944 64 bit (AMD64)]",
+  "results": [
+    {
+      "project": "scheduler",
+      "command": [
+        "D:\\code\\arc\\.venv\\Scripts\\python.exe",
+        "-W",
+        "error::ResourceWarning",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "exit_code": 0,
+      "log": "scheduler-windows.log"
+    },
+    {
+      "project": "arc",
+      "command": [
+        "D:\\code\\arc\\.venv\\Scripts\\python.exe",
+        "-W",
+        "error::ResourceWarning",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "exit_code": 0,
+      "log": "arc-windows.log"
+    }
+  ]
+}

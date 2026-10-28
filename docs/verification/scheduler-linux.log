@@ -1,0 +1,21 @@
+test_changed_dispatched_task_rejected (test_scheduler.SchedulerTests.test_changed_dispatched_task_rejected) ... ok
+test_checkpoint_retries_windows_reader_sharing_violation (test_scheduler.SchedulerTests.test_checkpoint_retries_windows_reader_sharing_violation) ... ok
+test_completed_is_not_dispatched_twice (test_scheduler.SchedulerTests.test_completed_is_not_dispatched_twice) ... ok
+test_concurrent_process_duplicate_has_one_dispatch (test_scheduler.SchedulerTests.test_concurrent_process_duplicate_has_one_dispatch) ... ok
+test_dirty_or_non_git_workspace_blocks (test_scheduler.SchedulerTests.test_dirty_or_non_git_workspace_blocks) ... ok
+test_exact_session_resume_after_failed_attempt (test_scheduler.SchedulerTests.test_exact_session_resume_after_failed_attempt) ... ok
+test_not_due_blocks (test_scheduler.SchedulerTests.test_not_due_blocks) ... ok
+test_quota_unknown_expired_insufficient_future_and_nan_block (test_scheduler.SchedulerTests.test_quota_unknown_expired_insufficient_future_and_nan_block) ... ok
+test_reset_window_requires_attested_future_reset (test_scheduler.SchedulerTests.test_reset_window_requires_attested_future_reset) ... ok
+test_sessionless_crash_never_automatically_restarts (test_scheduler.SchedulerTests.test_sessionless_crash_never_automatically_restarts) ... ok
+test_stop_during_execution (test_scheduler.SchedulerTests.test_stop_during_execution) ... ok
+test_timeout_checkpoints_session (test_scheduler.SchedulerTests.test_timeout_checkpoints_session) ... ok
+test_timeout_even_if_child_ignores_large_stdin (test_scheduler.SchedulerTests.test_timeout_even_if_child_ignores_large_stdin) ... ok
+test_unapproved_unresolved_changed_requirements_block (test_scheduler.SchedulerTests.test_unapproved_unresolved_changed_requirements_block) ... ok
+test_workflow_goal_and_scope_revisions_block_existing_export (test_scheduler.SchedulerTests.test_workflow_goal_and_scope_revisions_block_existing_export) ... ok
+test_workspace_lock_shared_across_state_directories (test_scheduler.SchedulerTests.test_workspace_lock_shared_across_state_directories) ... ok
+
+----------------------------------------------------------------------
+Ran 16 tests in 4.392s
+
+OK

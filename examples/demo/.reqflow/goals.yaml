@@ -1,0 +1,8 @@
+version: 1
+goals:
+- id: GOAL-001
+  version: 1
+  title: 合成测试：加法
+  questions: []
+  approved_by: automated-demo-fixture
+  status: approved

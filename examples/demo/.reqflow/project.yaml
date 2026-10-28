@@ -1,0 +1,7 @@
+allowed_paths:
+- calculator.py
+- test_calculator.py
+constraints:
+- Synthetic demonstration only; never CCE business requirements.
+repository: D:\code\arc\examples\demo\repository
+version: 1

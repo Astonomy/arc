@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.egg-info/
+upstream/
+.audit-staging/
+.pytest_cache/
+examples/demo/worktree/
+examples/demo/repository/
+examples/cce/
+docs/verification/viewer.pid
+docs/verification/viewer-*.log

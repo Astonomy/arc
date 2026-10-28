@@ -1,0 +1,24 @@
+test_five_hour_and_weekly_limit (test_scheduler.QuotaTests.test_five_hour_and_weekly_limit) ... ok
+test_missing_stale_and_wrong_bucket (test_scheduler.QuotaTests.test_missing_stale_and_wrong_bucket) ... ok
+test_rpc_handshake_no_model_turn (test_scheduler.QuotaTests.test_rpc_handshake_no_model_turn) ... ok
+test_daytime_outside_window_no_dispatch (test_scheduler.SchedulerTests.test_daytime_outside_window_no_dispatch) ... ok
+test_daytime_window_one_node_and_no_repeat (test_scheduler.SchedulerTests.test_daytime_window_one_node_and_no_repeat) ... ok
+test_exhausted_waits_and_requeries_after_reset (test_scheduler.SchedulerTests.test_exhausted_waits_and_requeries_after_reset) ... ok
+test_failure_requires_recovery_and_keeps_session (test_scheduler.SchedulerTests.test_failure_requires_recovery_and_keeps_session) ... ok
+test_invalid_nodes (test_scheduler.SchedulerTests.test_invalid_nodes) ... ok
+test_limit_mid_node_resumes_exact_session_with_continue (test_scheduler.SchedulerTests.test_limit_mid_node_resumes_exact_session_with_continue) ... ok
+test_no_requirement_or_git_checks_even_legacy_fields (test_scheduler.SchedulerTests.test_no_requirement_or_git_checks_even_legacy_fields) ... ok
+test_quota_checked_before_child (test_scheduler.SchedulerTests.test_quota_checked_before_child) ... ok
+test_sleep_boundaries (test_scheduler.SchedulerTests.test_sleep_boundaries) ... ok
+test_sleep_depth_first_and_completed_not_redispatched (test_scheduler.SchedulerTests.test_sleep_depth_first_and_completed_not_redispatched) ... ok
+test_sleep_overrides_daytime_delay (test_scheduler.SchedulerTests.test_sleep_overrides_daytime_delay) ... ok
+test_stop_before_first_dispatch_can_recover (test_scheduler.SchedulerTests.test_stop_before_first_dispatch_can_recover) ... ok
+test_stop_running_child_preserves_session (test_scheduler.SchedulerTests.test_stop_running_child_preserves_session) ... ok
+test_timeout_and_stop (test_scheduler.SchedulerTests.test_timeout_and_stop) ... ok
+test_unknown_quota_no_dispatch (test_scheduler.SchedulerTests.test_unknown_quota_no_dispatch) ... ok
+test_workspace_lock_and_changed_tree (test_scheduler.SchedulerTests.test_workspace_lock_and_changed_tree) ... ok
+
+----------------------------------------------------------------------
+Ran 19 tests in 6.841s
+
+OK

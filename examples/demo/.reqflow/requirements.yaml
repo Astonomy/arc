@@ -1,0 +1,21 @@
+id: ROOT
+name: 可复现 TDD 演示
+type: FOLDER
+description: 仅用于验证工具链的合成需求
+children:
+- id: REQ-ADD
+  name: 两数相加
+  type: ATOMIC
+  description: add(a,b) 返回数字之和
+  dependencies: []
+  scenarios:
+  - name: 两个整数相加
+    steps:
+    - keyword: GIVEN
+      content: 输入整数 2 和 3
+    - keyword: WHEN
+      content: 调用 add(2,3)
+    - keyword: THEN
+      content: 结果为 5
+  resolved_data: []
+resolved_data: []

@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "reqflow-arc"
+version = "0.1.0"
+description = "Project-independent ARC requirement workflow with Codex scheduling adapter"
+requires-python = ">=3.11"
+dependencies = ["PyYAML>=6.0,<7"]
+
+[project.scripts]
+reqflow = "reqflow.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["reqflow*"]
