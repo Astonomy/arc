@@ -65,7 +65,7 @@ compile 使用分析者身份记录编译就绪状态，不冒充额外的开发
 
 只监听 `127.0.0.1`，每两秒只读更新，Ctrl+C 停止。左侧阶段，右侧 Requirements、Interfaces、Tests 三栏内容纵向居中。SVG 曲线表示父子需求及同 REQ 的代码/测试关联；没有关联记录时不凭空连接。编译后的计划代码/测试单独显示“计划”，实际证据按记录状态显示。支持缩放、Fit、工件栏隐藏、节点详情、追溯与差异页。离线 view 不实时更新。
 
-Interfaces 按 scope 分组：默认 UI、API、FUNC、DB，支持自定义名称，无标注时放入“未指定 scope”。优先使用证据或 TDD 计划中的 `interface_scopes: {代码路径: SCOPE}`，其次继承需求树节点/父节点的 `scope`。同一 REQ 的不同代码文件可以属于不同 scope，连线仍按原 REQ 保留。记录实际工件时可用 `evidence ... --code src/api.py --interface-scope src/api.py=API`（可重复）。
+Interfaces 的 scope 从当前 REQ 文档动态获取，不预设 UI、API、FUNC、DB，也不限于软件前后端。需求树节点用 `scope: 机械控制` 声明，子需求可继承；原子 REQ 的 TDD 计划可用 `interface_scopes: {代码路径: 传感器采集}` 按文件细分。只显示当前 REQ 涉及的 scope，尚无工件时显示空组；未声明 scope 的工件放入“未指定 scope”。证据中的 scope 元数据不会创建或覆盖 REQ 的 scope。分组保留原 REQ 连线，实时更新需求后随之更新。
 
 节点以底色和文字同时标识状态：黄为待实现/计划，蓝为执行中，绿为通过，红为失败，灰为未知。verify 启动测试前写入 running，测试完成后更新结果；实时 Canvas 下次轮询会同步颜色，历史失败运行仍保留红色。
 

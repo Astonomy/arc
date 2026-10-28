@@ -1,5 +1,7 @@
 # Canvas 与 skill 验证（2026-10-27）
 
+动态 scope 更新：`check-canvas-states.cjs` 已验证只从当前 REQ 的 scope 和 TDD interface_scopes 生成分组，支持机械控制、传感器采集等领域名及父级 scope 继承；未涉及的固定分组不出现，历史 REQ/证据中的额外 scope 不影响分组。声明 scope 但尚无工件时保留空组，无 REQ 时无预设组。现有连线、状态底色、纵向居中和移动布局检查仍通过。
+
 2026-10-28 更新：ARC 37 项测试通过。新增验证覆盖 verify 执行中的 running 状态及最终状态、scope 元数据保存；`scripts/check-canvas-states.cjs` 验证 UI/API/FUNC/DB、自定义和未指定 scope 分组，五种不同底色、运行状态变化、工件连线及移动端布局。截图见 `examples/demo/scope-states.png`。
 
 - Windows：ARC 36 项、相邻新版 scheduler 19 项 unittest 通过，见 `windows.json` 和对应日志。
