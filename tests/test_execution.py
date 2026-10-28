@@ -57,6 +57,90 @@ class ExecutionTests(unittest.TestCase):
         self.assertEqual(accepted["test_runs"][-1]["exit_code"], 0)
         self.assertIn("REQ-2", self.export()[0]["prompt"])
 
+    def test_manual_rerun_repairs_scope_with_failure_output(self):
+        execution.verify_requirement(self.flow, 'REQ-1', self.workspace,
+                                     [sys.executable, '-c', "print('broken scope'); raise SystemExit(1)"])
+        original = subprocess.run
+        prompts = []
+        def repair(command, **kwargs):
+            if command[:2] == ['codex', 'exec']:
+                prompts.append(kwargs['input'])
+                return subprocess.CompletedProcess(command, 0)
+            return original(command, **kwargs)
+        with patch('reqflow.execution.subprocess.run', side_effect=repair):
+            result = execution.rerun_failed(self.flow)
+        self.assertEqual(result['REQ-1']['status'], 'failed')
+        self.assertEqual(len(prompts), 1)
+        self.assertIn('broken scope', prompts[0])
+        self.assertIn('Original requirement:', prompts[0])
+        self.assertEqual(len(result['REQ-1']['test_runs']), 2)
+
+    def test_auto_rerun_repeats_until_original_test_passes(self):
+        config = yaml.safe_load((self.flow / 'project.yaml').read_text())
+        config['auto_rerun'] = True
+        (self.flow / 'project.yaml').write_text(yaml.safe_dump(config))
+        ready = json.loads((self.flow / 'readiness.json').read_text())
+        ready['project_sha256'] = execution._digest(self.flow / 'project.yaml')
+        execution._write(self.flow / 'readiness.json', ready)
+        original = subprocess.run
+        repairs = []
+        def repair(command, **kwargs):
+            if command[:2] == ['codex', 'exec']:
+                repairs.append(command)
+                if len(repairs) == 2:
+                    (self.workspace / 'app.py').write_text('answer = 43\n')
+                return subprocess.CompletedProcess(command, 0)
+            return original(command, **kwargs)
+        with patch('reqflow.execution.subprocess.run', side_effect=repair):
+            result = execution.verify_requirement(self.flow, 'REQ-1', self.workspace,
+                [sys.executable, '-c', "assert '43' in open('app.py').read()"])
+        self.assertEqual(result['status'], 'accepted')
+        self.assertEqual(len(repairs), 2)
+        self.assertEqual(len(result['test_runs']), 3)
+
+    def test_rerun_executor_failure_is_reported_and_unlocks_retry(self):
+        execution.verify_requirement(self.flow, 'REQ-1', self.workspace,
+                                     [sys.executable, '-c', 'raise SystemExit(1)'])
+        original = subprocess.run
+        def repair(command, **kwargs):
+            if command[:2] == ['codex', 'exec']:
+                return subprocess.CompletedProcess(command, 9)
+            return original(command, **kwargs)
+        with patch('reqflow.execution.subprocess.run', side_effect=repair):
+            with self.assertRaisesRegex(ValueError, 'Codex repair failed'):
+                execution.rerun_failed(self.flow)
+        state = json.loads((self.flow / 'rerun.json').read_text())
+        self.assertEqual(state['status'], 'failed')
+        self.assertFalse(execution._rerun_lock.locked())
+
+    def test_rerun_uses_scheduler_when_original_request_was_scheduled(self):
+        execution.verify_requirement(self.flow, 'REQ-1', self.workspace,
+                                     [sys.executable, '-c', 'raise SystemExit(1)'])
+        task_path = self.root / 'original.json'
+        execution._write(task_path, {'version': 1, 'id': 'original',
+            'workspace': str(self.workspace), 'codex': ['custom-codex'],
+            'tree': {'id': 'root', 'prompt': 'original', 'children': []}})
+        execution._write(self.flow / 'scheduler.json', {'task': str(task_path),
+            'id': 'original', 'state_dir': str(self.root / 'scheduler-state')})
+        original = subprocess.run
+        scheduled = []
+        def dispatch(command, **kwargs):
+            self.assertNotEqual(command[:2], ['codex', 'exec'])
+            if 'reqflow_scheduler' in command:
+                self.assertIn('watch', command)
+                task = json.loads(Path(command[4]).read_text(encoding='utf-8'))
+                scheduled.append(task)
+                execution._write(self.root / 'scheduler-state' / task['id'] / 'state.json',
+                                 {'status': 'completed'})
+                return subprocess.CompletedProcess(command, 0)
+            return original(command, **kwargs)
+        with patch('reqflow.execution.subprocess.run', side_effect=dispatch):
+            execution.rerun_failed(self.flow)
+        self.assertEqual(len(scheduled), 1)
+        self.assertEqual(scheduled[0]['codex'], ['custom-codex'])
+        self.assertIn('Original requirement:', scheduled[0]['tree']['prompt'])
+        self.assertEqual(json.loads(task_path.read_text())['tree']['prompt'], 'original')
+
     def test_source_and_unrelated_repositories_rejected(self):
         for workspace in (self.repo, self.root):
             with self.assertRaises(ValueError):

@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 import subprocess
 import uuid
+import threading
 
 import yaml
 
@@ -174,7 +175,7 @@ def record_evidence(flow_dir, req_id, workspace, tests: list[str], code: list[st
     return entry
 
 
-def verify_requirement(flow_dir, req_id, workspace, command: list[str]) -> dict:
+def verify_requirement(flow_dir, req_id, workspace, command: list[str], *, _auto=True) -> dict:
     flow_dir = Path(flow_dir).resolve()
     ready = _approved(flow_dir)
     workspace = _workspace_guard(flow_dir, Path(workspace))
@@ -237,4 +238,86 @@ def verify_requirement(flow_dir, req_id, workspace, command: list[str]) -> dict:
              "test_runs": [*runs, run], "logs": [str(run_dir / "stdout.log"), str(run_dir / "stderr.log")]}
     trace["requirements"][req_id] = entry
     _write(flow_dir / "traceability.json", trace)
+    if _auto and entry["status"] == "failed" and _project(flow_dir).get("auto_rerun") is True:
+        rerun_failed(flow_dir, [req_id])
+        return _trace(flow_dir)["requirements"][req_id]
     return entry
+
+
+_rerun_lock = threading.Lock()
+
+
+def rerun_failed(flow_dir, req_ids=None):
+    """Repair failed requirements and verify their original commands."""
+    flow = Path(flow_dir).resolve()
+    if not _rerun_lock.acquire(blocking=False):
+        raise ValueError("a re-run is already in progress")
+    state = {"status": "running"}
+    try:
+        _approved(flow)
+        plan = {req['id']: req for req in _plan(flow)}
+        failed = {key: entry for key, entry in _trace(flow)['requirements'].items()
+                  if entry.get('status') == 'failed' and entry.get('test_runs')}
+        selected = list(failed) if req_ids is None else req_ids
+        if not selected or any(key not in failed for key in selected):
+            raise ValueError("re-run requires failed tests")
+        _write(flow / 'rerun.json', state)
+        for req_id in selected:
+            commands = []
+            for previous_run in failed[req_id]['test_runs']:
+                command = previous_run['command']
+                if command not in commands:
+                    commands.append(command)
+            while True:
+                ready = _approved(flow)
+                entry = _trace(flow)['requirements'][req_id]
+                workspace = _workspace_guard(flow, Path(entry['workspace']))
+                if entry.get('requirements_sha256') != ready['requirements_sha256']:
+                    raise ValueError('failed tests refer to outdated requirements')
+                run = entry['test_runs'][-1]
+                errors = {}
+                for key in ('stdout', 'stderr'):
+                    path = Path(run.get(key, ''))
+                    if path.is_file() and path.resolve().is_relative_to(flow / 'runs'):
+                        errors[key] = path.read_text(encoding='utf-8', errors='replace')
+                receipt = flow / 'reqs' / (req_id + '.yaml')
+                prompt = (
+                    f"Repair only the scope of approved requirement {req_id}.\n"
+                    f"Original requirement: {json.dumps(plan[req_id], ensure_ascii=False)}\n"
+                    f"Original request: {(flow / 'source.md').read_text(encoding='utf-8') if (flow / 'source.md').exists() else ''}\n"
+                    f"TDD plan: {receipt.read_text(encoding='utf-8') if receipt.exists() else ''}\n"
+                    f"Project constraints: {json.dumps(_project(flow), ensure_ascii=False)}\n"
+                    f"Failed test: {json.dumps(run, ensure_ascii=False)}\n"
+                    f"Test output: {json.dumps(errors, ensure_ascii=False)}\n"
+                    "Fix the implementation using the original requirements and test errors. "
+                    "Preserve unrelated scopes. Do not weaken tests, edit ARC metadata or invoke ARC verify; "
+                    "the caller will rerun the original test command."
+                )
+                repair_dir = flow / 'runs' / ('repair-' + uuid.uuid4().hex)
+                repair_dir.mkdir(parents=True)
+                state.update(req_id=req_id, logs=str(repair_dir))
+                _write(flow / 'rerun.json', state)
+                with (repair_dir / 'stdout.log').open('wb') as out, (repair_dir / 'stderr.log').open('wb') as err:
+                    scheduler = _read(flow / 'scheduler.json')
+                    if scheduler is not None:
+                        from .queue import schedule_repair
+                        schedule_repair(flow, workspace, req_id, prompt, scheduler, state, out, err)
+                    else:
+                        result = subprocess.run(['codex', 'exec', '--full-auto', '-'], cwd=workspace,
+                                                input=prompt, text=True, encoding='utf-8', stdout=out, stderr=err)
+                        if result.returncode:
+                            raise ValueError(f"Codex repair failed (exit {result.returncode}); see {repair_dir}")
+                for command in commands:
+                    entry = verify_requirement(flow, req_id, workspace, command, _auto=False)
+                    if entry['status'] != 'accepted':
+                        break
+                if entry['status'] == 'accepted' or _project(flow).get('auto_rerun') is not True:
+                    break
+        state['status'] = 'finished'
+        return {key: _trace(flow)['requirements'][key] for key in selected}
+    except Exception as exc:
+        state.update(status='failed', error=str(exc))
+        raise
+    finally:
+        _write(flow / 'rerun.json', state)
+        _rerun_lock.release()

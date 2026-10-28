@@ -152,3 +152,11 @@ cd ../scheduler
 ```
 
 ARC 复用 [agentic-requirement-compiler](https://github.com/code-philia/agentic-requirement-compiler) 的契约解析器，固定提交为 `5a02a173d33ebd9251b28d97c70f6a0cb5b20deb`。请使用源码或可编辑安装，上游解析器不随 wheel 打包。
+
+
+Canvas 实时页面提供 **Re-run** 按钮，有失败测试时可点击。ARC 将原始需求、TDD 计划和测试错误交给本机 `codex exec --full-auto` 修复对应 scope，然后重新执行原测试命令。静态 HTML 快照不支持执行。
+
+在 `.arc/project.yaml` 中设置 `auto_rerun: true` 可为新请求启用自动重试（默认 `false`）；已创建请求需修改其目录中的 `project.yaml`。请在需求审批前配置，审批后的配置变更需要重新审批。启用后，`verify` 测试失败会自动修复、验证，直到通过；Codex 执行错误或审批失效会停止，并在 Canvas 显示原因。执行日志保存在请求目录的 `runs/` 中。
+
+
+若原请求通过 ARC `enqueue` 提交给 scheduler（请求目录存在 `scheduler.json`），re-run 会创建独立的 scheduler 修复任务，继承原任务配置与状态目录，通过 `watch` 遵守时间窗口和账户额度后执行，不直接调用 Codex，也不修改已调度的原任务树。每轮调度完成后 ARC 重新验证测试；自动重试仍失败时，继续提交下一轮。Canvas 在等待调度期间保持重试中，`rerun.json` 记录对应任务路径。运行环境需要 ARC 相邻的 scheduler checkout。

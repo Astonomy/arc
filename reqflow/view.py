@@ -29,6 +29,7 @@ def render_view(flow_dir, output):
         if (flow_dir / "analysis.yaml").exists() else None,
         "tdd": {path.stem: yaml.safe_load(path.read_text(encoding='utf-8')).get('tdd', {})
                 for path in sorted((flow_dir / 'reqs').glob('*.yaml'))},
+        "rerun": read_json(flow_dir / "rerun.json", {}),
         "scheduler": read_json(flow_dir / 'scheduler.json', None),
     }
     data = json.dumps(payload, ensure_ascii=False).replace("<", "\\u003c").replace("&", "\\u0026")

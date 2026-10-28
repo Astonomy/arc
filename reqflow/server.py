@@ -1,7 +1,10 @@
-"""Loopback-only, read-only live view of workflow files."""
+"""Loopback-only, live view and failed-test repair of workflow files."""
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 import tempfile
+import threading
+
+from .execution import rerun_failed
 import webbrowser
 
 import yaml
@@ -13,6 +16,30 @@ def make_server(flow_dir, port=0):
     flow = Path(flow_dir).resolve()
 
     class Handler(BaseHTTPRequestHandler):
+        def do_POST(self):
+            if self.path != '/rerun':
+                self.send_error(404)
+                return
+            # Reject cross-origin browser requests before starting code execution.
+            if self.headers.get('Origin') != 'http://' + self.headers.get('Host', ''):
+                self.send_error(403)
+                return
+            if self.headers.get('X-ARC-Rerun') != '1':
+                self.send_error(403)
+                return
+            if server.repair_worker and server.repair_worker.is_alive():
+                self.send_error(409, 're-run already in progress')
+                return
+            def repair():
+                try:
+                    rerun_failed(flow)
+                except (OSError, ValueError):
+                    pass  # Persisted in rerun.json for the live view.
+            server.repair_worker = threading.Thread(target=repair, daemon=True)
+            server.repair_worker.start()
+            self.send_response(202)
+            self.end_headers()
+
         def do_GET(self):
             if self.path not in {"/", "/snapshot"}:
                 self.send_error(404)
@@ -33,7 +60,9 @@ def make_server(flow_dir, port=0):
         def log_message(self, *_args):
             pass
 
-    return ThreadingHTTPServer(("127.0.0.1", port), Handler)
+    server = ThreadingHTTPServer(("127.0.0.1", port), Handler)
+    server.repair_worker = None
+    return server
 
 
 def serve(flow_dir, port=0, open_browser=True):

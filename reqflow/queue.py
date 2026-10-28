@@ -1,6 +1,9 @@
 """Append compiled REQ work to an unstarted scheduler tree, never dispatch it."""
 from copy import deepcopy
 import json
+import subprocess
+import sys
+import uuid
 from pathlib import Path
 
 import yaml
@@ -92,3 +95,34 @@ def enqueue(flow, task_file, workspace, state_dir=None, parent_id=None):
     core._write(task_file, task, as_json=True)
     execution._write(flow / 'scheduler.json', {"task": str(task_file), "id": task['id'], "state_dir": str(state_dir)})
     return {"status": "queued", "task": str(task_file), "id": task['id'], "nodes": [n['id'] for n in nodes]}
+
+
+
+def schedule_repair(flow, workspace, req_id, prompt, scheduler, state, stdout, stderr):
+    """Submit a fresh immutable task and wait for scheduler-controlled execution."""
+    source_path = Path(scheduler['task']).resolve()
+    source = json.loads(source_path.read_text(encoding='utf-8-sig'))
+    if (source_path.parent / source['workspace']).resolve() != workspace:
+        raise ValueError('scheduler workspace differs from failed test workspace')
+    task = {**source, 'id': 'arc-rerun-' + uuid.uuid4().hex,
+            'workspace': str(workspace),
+            'tree': {'id': req_id, 'prompt': prompt, 'children': []}}
+    task.pop('prompt', None)
+    task_path = source_path.parent / (task['id'] + '.json')
+    state_dir = Path(scheduler['state_dir']).resolve()
+    if task_path.is_relative_to(workspace) or state_dir.is_relative_to(workspace):
+        raise ValueError('scheduler tasks and state must stay outside workspace')
+    execution._write(task_path, task)
+    state.update(scheduler_task=str(task_path), scheduler_id=task['id'], status='running')
+    execution._write(flow / 'rerun.json', state)
+    scheduler_repo = Path(__file__).resolve().parents[2] / 'scheduler'
+    python = scheduler_repo / '.venv' / ('Scripts/python.exe' if sys.platform == 'win32' else 'bin/python')
+    if not scheduler_repo.is_dir():
+        raise ValueError('scheduler checkout unavailable; re-run task saved for scheduling')
+    result = subprocess.run([str(python) if python.exists() else sys.executable,
+                             '-m', 'reqflow_scheduler', 'watch', str(task_path),
+                             '--state-dir', str(state_dir)], cwd=scheduler_repo,
+                            stdout=stdout, stderr=stderr)
+    checkpoint = execution._read(state_dir / task['id'] / 'state.json', {})
+    if result.returncode or checkpoint.get('status') != 'completed':
+        raise ValueError(f"scheduler repair did not complete; inspect {task_path}")

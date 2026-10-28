@@ -21,7 +21,7 @@ def initialize(project):
         raise ValueError('project .arc must be a local directory, not a symlink')
     folder.mkdir(exist_ok=True)
     if not (folder / "project.yaml").exists():
-        core._write(folder / "project.yaml", {"version": 1, "workspace": str(project)})
+        core._write(folder / "project.yaml", {"version": 1, "workspace": str(project), "auto_rerun": False})
     return folder
 
 
