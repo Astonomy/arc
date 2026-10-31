@@ -1,11 +1,45 @@
+# Python environments, bytecode, and build artifacts
 .venv/
+venv/
 __pycache__/
+*.py[cod]
 *.egg-info/
+/.eggs/
+/build/
+/dist/
+
+# Test, coverage, and lint caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Local credentials (keep shareable environment templates)
+.env
+.env.*
+!.env.example
+!.env.sample
+
+# Editor and operating-system files
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Local upstream checkout and audit workspace
 upstream/
 .audit-staging/
-.pytest_cache/
+
+# Generated demo repositories and local imported data
 examples/demo/worktree/
 examples/demo/repository/
 examples/cce/
+examples/demo/.reqflow/runs/
+
+# Viewer process files (verification evidence remains tracked)
 docs/verification/viewer.pid
 docs/verification/viewer-*.log
